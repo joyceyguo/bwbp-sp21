@@ -1,5 +1,5 @@
 import React from 'react';
-import { KeyboardAvoidingView, ScrollView } from 'react-native';
+import { KeyboardAvoidingView, ScrollView, Alert } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ImageContainer, LoginImg, LoginInput, LoginHeader, LoginButton, LoginButtonText, LoginText } from './styles';
 import { getUser } from '@utils/airtable/requests';
@@ -35,14 +35,19 @@ export default class LoginScreen extends React.Component<LoginScreenProps, Login
     super(props);
     this.state = {
       user: { ...UserMock },
+      // user: { ...getUser },
     };
   }
 
   async login(): Promise<void> {
     const user = await getUser(this.state.user);
-    if (user) {
+    // const user = await getUser(user);
+    // const user = await getUser(testUser);
+    if (this.state.user.uname == user.uname && this.state.user.password == user.password) {
       await this.context.setUser(user);
       this.props.navigation.navigate('App');
+    } else if (this.state.user.uname == '' && this.state.user.password == '') {
+      alert('Please input a username and password.');
     } else {
       alert('Incorrect username or password.');
     }
